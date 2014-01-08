@@ -1,0 +1,35 @@
+#!/bin/bash
+
+altDir=$(pwd)
+fileList=(`ls $altDir `)
+
+if [ -z "$1" ]; then
+	echo "No first argument was provided. Exiting." >&2
+	exit 1
+fi
+
+if [ $(($# > 2)) ]; then
+	echo "Too many arguments provided. Exiting." >&2
+	exit 1
+fi
+
+origRegex="$1"
+newRegex="$2"
+
+wereChanges=0
+for k in "${fileList[@]}"; do
+	old="$k"
+	new="$(echo $k | sed s/$origRegex/$newRegex/ )"
+	if [ "$new" != "$old" ] && [ "$new" != "$0" ] && [ "./$new" != "$0" ]
+	then
+		echo "$old was changed to $new"
+		mv "$old" "$new"
+		wereChanges=1
+	fi
+done
+
+if [ $wereChanges = 0 ]; then
+	echo "No files were moved" >&2
+fi
+
+exit 0
