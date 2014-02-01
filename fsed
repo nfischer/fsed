@@ -4,15 +4,39 @@ altDir=$(pwd)
 origRegex="$1"
 newRegex="$2"
 
+usage()
+{
+cat << EOF >&2
+Usage: fsed [options] pattern1 [pattern2]
+
+Replaces all parts of filenames matching pattern1 (a regular expression) with
+pattern2. If no pattern2 is specified, it will delete pattern1 from the
+filename.
+
+Options:
+    --help              Prints this help menu
+    -d dirname          If dirname is a valid path to a directory, it 
+                        selects that directory to operate on instead
+                        (default is working directory)
+EOF
+}
+
 
 if [ -z "$1" ]; then
 	echo "No first argument was provided. Exiting." >&2
+	echo "Try 'fsed --help' for usage" >&2
+	exit 1
+fi
+
+if [ "$1" == "--help" ]; then
+	usage # function call
 	exit 1
 fi
 
 if [ "$1" == "-d" ]; then
 	# user-specified directory
 	altDir="$2"
+	prefix="$2"
 	if [ ! -d $altDir ]; then
 		echo "Error: directory $altDir not found." >&2
 		exit 1
@@ -22,6 +46,7 @@ if [ "$1" == "-d" ]; then
 		canary="$5" # should be blank
 	fi
 else
+	prefix=""
 	canary="$3" # should be blank
 fi
 
@@ -41,7 +66,7 @@ for k in "${fileList[@]}"; do
 	new="$(echo $k | sed s/$origRegex/$newRegex/ )"
 	if [ "$new" != "$old" ] && [ "$new" != "$0" ] && [ "./$new" != "$0" ]
 	then
-		echo "$old was changed to $new"
+		echo "$prefix$old was changed to $prefix$new"
 		mv "$old" "$new"
 		wereChanges=1
 	fi
