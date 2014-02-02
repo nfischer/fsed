@@ -64,7 +64,7 @@ wereChanges=0
 for k in "${fileList[@]}"; do
 	old="$k"
 	new="$(echo $k | sed s/$origRegex/$newRegex/ )"
-	if [ "$new" != "$old" ] && [ "$new" != "$0" ] && [ "./$new" != "$0" ]
+	if [ "$new" != "$old" ] && [ "$new" != "$0" ] && [ "./$new" != "$0" ] && [ ! -z "$new" ]
 	then
 		echo "$prefix$old was changed to $prefix$new"
 		mv "$old" "$new"
