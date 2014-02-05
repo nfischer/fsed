@@ -4,6 +4,8 @@ altDir=$(pwd)
 origRegex="$1"
 newRegex="$2"
 
+isGlobal="g" # assume I want global replacement
+
 usage()
 {
 cat << EOF >&2
@@ -80,7 +82,9 @@ fi
 wereChanges=0
 for k in "${fileList[@]}"; do
 	old="$k"
-	new="$(echo $k | sed s/$origRegex/$newRegex/ )"
+
+	# default for isGlobal is 'g'
+	new="$(echo $k | sed s/$origRegex/$newRegex/$isGlobal )"
 	if [ "$new" != "$old" ] && [ "$new" != "$0" ] && [ "./$new" != "$0" ] && [ ! -z "$new" ]
 	then
 		echo "$prefix$old was changed to $prefix$new"
