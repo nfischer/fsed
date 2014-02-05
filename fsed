@@ -46,10 +46,10 @@ if [ "$1" == "-d" ] || [ "$1" == "-f" ]; then
 		prefix=""
 	fi
 
-	if [ ! -d $altDir ] && [ "$1" == "-d" ]; then
+	if [ ! -d "$altDir" ] && [ "$1" == "-d" ]; then
 		echo "Error: directory $altDir not found." >&2
 		exit 1
-	elif [ ! -f $altDir ] && [ "$1" == "-f" ]; then # altDir is a file here
+	elif [ ! -f "$altDir" ] && [ "$1" == "-f" ]; then # altDir is a file here
 		echo "Error: file $altDir not found." >&2
 		exit 1
 	else
@@ -67,7 +67,7 @@ oldIFS=$IFS
 IFS='
 '
 
-fileList=(`ls $altDir`) # handles -d, -f, and default case
+fileList=(`ls "$altDir"`) # handles -d, -f, and default case
 
 if [ -n "$canary" ] ; then # canary isn't blank
 	echo "Error: fsed cannot take $# arguments." >&2
@@ -76,7 +76,7 @@ fi
 
 # change to altdir (changes not saved after exit)
 if [ "$1" == "-d" ]; then
-	cd $altDir
+	cd "$altDir"
 fi
 
 wereChanges=0
