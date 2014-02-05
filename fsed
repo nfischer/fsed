@@ -60,6 +60,11 @@ else
 	canary="$3" # should be blank
 fi
 
+# set IFS to newline
+oldIFS=$IFS
+IFS='
+'
+
 fileList=(`ls $altDir`) # handles -d, -f, and default case
 
 if [ -n "$canary" ] ; then # canary isn't blank
@@ -87,5 +92,8 @@ done
 if [ $wereChanges = 0 ]; then
 	echo "No files were moved" >&2
 fi
+
+# cleanup
+IFS=$oldIFS
 
 exit 0
