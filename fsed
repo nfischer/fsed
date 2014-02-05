@@ -49,7 +49,7 @@ if [ "$1" == "-d" ] || [ "$1" == "-f" ]; then
 	if [ ! -d "$altDir" ] && [ "$1" == "-d" ]; then
 		echo "Error: directory $altDir not found." >&2
 		exit 1
-	elif [ ! -f "$altDir" ] && [ "$1" == "-f" ]; then # altDir is a file here
+	elif [ ! -e "$altDir" ] && [ "$1" == "-f" ]; then # altDir is a file here
 		echo "Error: file $altDir not found." >&2
 		exit 1
 	else
