@@ -53,7 +53,7 @@ fi
 fileList=(`ls $altDir`)
 
 if [ -n "$canary" ] ; then # canary isn't blank
-	echo "Too many arguments provided. Exiting." >&2
+	echo "Error: fsed cannot take $# arguments." >&2
 	exit 1
 fi
 
