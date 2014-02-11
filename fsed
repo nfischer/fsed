@@ -1,6 +1,6 @@
 #!/bin/bash
 
-altDir=$(pwd)
+altDir=""
 origRegex="$1"
 newRegex="$2"
 
@@ -8,8 +8,8 @@ isGlobal="g" # assume I want global replacement
 
 usage()
 {
-cat << EOF >&2
-Usage: fsed [options] pattern1 [pattern2]
+cat << EOF
+Usage: fsed [options] 'pattern1' '[pattern2]'
 
 Replaces all parts of filenames matching pattern1 (a regular expression) with
 pattern2. If no pattern2 is specified, it will delete pattern1 from the
@@ -67,10 +67,16 @@ oldIFS=$IFS
 IFS='
 '
 
-fileList=(`ls -d "$altDir"`) # handles -d, -f, and default case
+if [ -z "$altDir" ]; then
+	fileList=(`ls`) # handles default case
+else
+	fileList=(`ls -d "$altDir"`) # handles -d, -f, and default case
+fi
+
 
 if [ -n "$canary" ] ; then # canary isn't blank
 	echo "Error: fsed cannot take $# arguments." >&2
+	echo "Try 'pattern1' 'pattern2' for better results, or try fsed --help" >&2
 	exit 1
 fi
 
