@@ -27,39 +27,39 @@ EOF
 
 
 if [ -z "$1" ]; then
-	echo "No first argument was provided. Exiting." >&2
-	echo "Try 'fsed --help' for usage" >&2
-	exit 1
+    echo "No first argument was provided. Exiting." >&2
+    echo "Try 'fsed --help' for usage" >&2
+    exit 1
 fi
 
 if [ "$1" == "--help" ]; then
-	usage # function call
-	exit 1
+    usage # function call
+    exit 1
 fi
 
 if [ "$1" == "-d" ] || [ "$1" == "-f" ]; then
-	# user-specified directory
-	altDir="$2"
-	if [ "$1" == "-d" ]; then
-		prefix="$2"
-	else
-		prefix=""
-	fi
+    # user-specified directory
+    altDir="$2"
+    if [ "$1" == "-d" ]; then
+        prefix="$2"
+    else
+        prefix=""
+    fi
 
-	if [ ! -d "$altDir" ] && [ "$1" == "-d" ]; then
-		echo "Error: directory $altDir not found." >&2
-		exit 1
-	elif [ ! -e "$altDir" ] && [ "$1" == "-f" ]; then # altDir is a file here
-		echo "Error: file $altDir not found." >&2
-		exit 1
-	else
-		origRegex="$3"
-		newRegex="$4"
-		canary="$5" # should be blank
-	fi
+    if [ ! -d "$altDir" ] && [ "$1" == "-d" ]; then
+        echo "Error: directory $altDir not found." >&2
+        exit 1
+    elif [ ! -e "$altDir" ] && [ "$1" == "-f" ]; then # altDir is a file here
+        echo "Error: file $altDir not found." >&2
+        exit 1
+    else
+        origRegex="$3"
+        newRegex="$4"
+        canary="$5" # should be blank
+    fi
 else
-	prefix=""
-	canary="$3" # should be blank
+    prefix=""
+    canary="$3" # should be blank
 fi
 
 # set IFS to newline
@@ -68,39 +68,39 @@ IFS='
 '
 
 if [ -z "$altDir" ]; then
-	fileList=(`ls`) # handles default case
+    fileList=(`ls`) # handles default case
 else
-	fileList=(`ls -d "$altDir"`) # handles -d, -f, and default case
+    fileList=(`ls -d "$altDir"`) # handles -d, -f, and default case
 fi
 
 
 if [ -n "$canary" ] ; then # canary isn't blank
-	echo "Error: fsed cannot take $# arguments." >&2
-	echo "Try 'pattern1' 'pattern2' for better results, or try fsed --help" >&2
-	exit 1
+    echo "Error: fsed cannot take $# arguments." >&2
+    echo "Try 'pattern1' 'pattern2' for better results, or try fsed --help" >&2
+    exit 1
 fi
 
 # change to altdir (changes not saved after exit)
 if [ "$1" == "-d" ]; then
-	cd "$altDir"
+    cd "$altDir"
 fi
 
 wereChanges=0
 for k in "${fileList[@]}"; do
-	old="$k"
+    old="$k"
 
-	# default for isGlobal is 'g'
-	new="$(echo $k | sed s/$origRegex/$newRegex/$isGlobal )"
-	if [ "$new" != "$old" ] && [ "$new" != "$0" ] && [ "./$new" != "$0" ] && [ ! -z "$new" ]
-	then
-		echo "$prefix$old was changed to $prefix$new"
-		mv "$old" "$new"
-		wereChanges=1
-	fi
+    # default for isGlobal is 'g'
+    new="$(echo $k | sed s/$origRegex/$newRegex/$isGlobal )"
+    if [ "$new" != "$old" ] && [ "$new" != "$0" ] && [ "./$new" != "$0" ] && [ ! -z "$new" ]
+    then
+        echo "$prefix$old was changed to $prefix$new"
+        mv "$old" "$new"
+        wereChanges=1
+    fi
 done
 
 if [ $wereChanges = 0 ]; then
-	echo "No files were moved" >&2
+    echo "No files were moved" >&2
 fi
 
 # cleanup
